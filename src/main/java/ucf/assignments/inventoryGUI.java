@@ -21,15 +21,11 @@ public class inventoryGUI extends Application {
     public void start(Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Inventory.fxml")));
-            FileChooser fileChooser = new FileChooser();
-            Button button = new Button("Select File");
-            button.setOnAction(e -> {
-                File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            });
 
             Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
+
             primaryStage.setTitle("Inventory Tracker");
+            primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
