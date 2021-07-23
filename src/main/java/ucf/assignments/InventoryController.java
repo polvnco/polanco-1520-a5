@@ -20,12 +20,15 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
-
-import static jdk.jfr.consumer.EventStream.openFile;
 
 public class InventoryController implements Initializable {
 
+    @FXML public Label nameError;
+    @FXML public Label serialError;
+    @FXML public Label valueError;
     @FXML public TextField textFieldValue;
     @FXML public TextField textFieldsNumber;
     @FXML public TextField textFieldName;
@@ -40,6 +43,10 @@ public class InventoryController implements Initializable {
     public TableColumn<Object, String> nameColumn;
     @FXML
     public Pane root;
+
+    String name;
+    Double value;
+    String serial;
 
     //public ObservableList<Table> data = FXCollections.observableArrayList();
 
@@ -58,39 +65,103 @@ public class InventoryController implements Initializable {
         sNumberColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        Table ex1 = new Table("12", "XXXXXX", "test");
-        Table ex2 = new Table("15", "XXXXXY", "wowza");
-        Table ex3 = new Table("14", "XXXXXZ", "yer");
-        Table ex4 = new Table("13", "XXXXXZ", "pem");
+        Table ex1 = new Table("399.00", "AXB124AXY3", "Xbox One");
+        Table ex2 = new Table("599.99", "S40AZBDE47", "Samsung TV");
+        Table ex3 = new Table("14.99", "EZGGLOL420", "Lemon Pledge");
+        Table ex4 = new Table("4.20", "SD51S2DETX", "Colt 45");
 
         dataList.addAll(ex1, ex2, ex3, ex4);
 
         FilteredList<Table> filteredData = new FilteredList<>(dataList, b -> true);
-        filterBar.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(table -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
+        filterBar.textProperty().addListener((observable, oldValue, newValue) -> filteredData.setPredicate(table -> {
+            if (newValue == null || newValue.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = newValue.toLowerCase();
 
-                if (table.getValue().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (table.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else return table.getSerial().toLowerCase().contains(lowerCaseFilter);
+            if (table.getValue().toLowerCase().contains(lowerCaseFilter)) {
+                return true;
+            } else if (table.getName().toLowerCase().contains(lowerCaseFilter)) {
+                return true;
+            } else return table.getSerial().toLowerCase().contains(lowerCaseFilter);
 
-            });
-        });
+        }));
 
         SortedList<Table> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
 
         tableView.setItems(sortedData);
     }
+
+    public boolean checkName() {
+        try {
+            Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            name = ex5.getName();
+            if (name.length() >= 2 && name.length() <= 256) {
+                nameError.setText("Name Status: OKAY!");
+                //ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+                //dataList.add(ex5);
+            }
+            else {
+                nameError.setText("ERROR: Name must be between 2 and 256 inclusive characters");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public boolean isDigitAlpha(String serial) {
+        return ((serial != null) && (!serial.equals("")) && (serial.matches("^[a-zA-Z0-9]+$")));
+    }
+
+    public boolean checkSerial() {
+        try {
+            Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            serial = ex5.getSerial();
+            System.out.println(isDigitAlpha(serial));
+
+
+            List<String> serialData = new ArrayList<>();
+            for (Table item : tableView.getItems()) {
+                serialData.add(sNumberColumn.getCellObservableValue(item).getValue());
+            }
+
+            if (serialData.contains(serial)) {
+                System.out.println("");
+                serialError.setText("ERROR: Serial Duplication!");
+                return false;
+            } else if (serial.isEmpty()) {
+                serialError.setText("ERROR: Field is empty");
+                return false;
+            } else if (serial.length() != 10) {
+                serialError.setText("ERROR: Serial length of XXXXXXXXXX");
+                return false;
+            } else if (!isDigitAlpha(serial)) {
+                serialError.setText("ERROR: Serial cannot contain special characters");
+                return false;
+            }
+            else {
+                serialError.setText("Serial Status: OKAY!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
     @FXML
     public void addButton(ActionEvent actionEvent) {
-        Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
-        dataList.add(ex5);
+        checkSerial();
+        checkName();
+        //System.out.println(checkSerial());
+        //System.out.println(checkName());
+        if (checkName() && checkSerial()) {
+            Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            dataList.add(ex5);
+        }
     }
 
     @FXML
