@@ -17,9 +17,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -45,12 +48,13 @@ public class InventoryController implements Initializable {
     public Pane root;
 
     String name;
-    Double value;
+    Float value;
     String serial;
 
     //public ObservableList<Table> data = FXCollections.observableArrayList();
 
     public ObservableList<Table> dataList = FXCollections.observableArrayList();
+    checker c = new checker();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,10 +69,11 @@ public class InventoryController implements Initializable {
         sNumberColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        Table ex1 = new Table("399.00", "AXB124AXY3", "Xbox One");
-        Table ex2 = new Table("599.99", "S40AZBDE47", "Samsung TV");
-        Table ex3 = new Table("14.99", "EZGGLOL420", "Lemon Pledge");
-        Table ex4 = new Table("4.20", "SD51S2DETX", "Colt 45");
+        Table ex1 = new Table("$399.00", "AXB124AXY3", "Xbox One");
+        Table ex2 = new Table("$599.99", "S40AZBDE47", "Samsung TV");
+        Table ex3 = new Table("$14.99", "EZGGLOL420", "Lemon Pledge");
+        Table ex4 = new Table("$4.20", "SD51S2DETX", "Colt 45");
+
 
         dataList.addAll(ex1, ex2, ex3, ex4);
 
@@ -93,14 +98,35 @@ public class InventoryController implements Initializable {
         tableView.setItems(sortedData);
     }
 
+    public boolean checkValue() {
+        try {
+            Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            value = Float.valueOf(ex5.getValue());
+            String otherValue = ex5.getValue();
+            //String formattedValue = String.format("%.02f", value);
+            //System.out.println(formattedValue);
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            String newValue = formatter.format(value);
+            System.out.println(newValue);
+            if (!c.isDigit(otherValue)) {
+                valueError.setText("ERROR: Input a number");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            valueError.setText("ERROR: Input a number");
+        } catch (Exception e) {
+            valueError.setText("ERROR?");
+        }
+
+        return true;
+    }
+
     public boolean checkName() {
         try {
             Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
             name = ex5.getName();
             if (name.length() >= 2 && name.length() <= 256) {
                 nameError.setText("Name Status: OKAY!");
-                //ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
-                //dataList.add(ex5);
             }
             else {
                 nameError.setText("ERROR: Name must be between 2 and 256 inclusive characters");
@@ -113,15 +139,11 @@ public class InventoryController implements Initializable {
         return true;
     }
 
-    public boolean isDigitAlpha(String serial) {
-        return ((serial != null) && (!serial.equals("")) && (serial.matches("^[a-zA-Z0-9]+$")));
-    }
-
     public boolean checkSerial() {
         try {
             Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
             serial = ex5.getSerial();
-            System.out.println(isDigitAlpha(serial));
+            //System.out.println(c.isDigitAlpha(serial));
 
 
             List<String> serialData = new ArrayList<>();
@@ -139,7 +161,7 @@ public class InventoryController implements Initializable {
             } else if (serial.length() != 10) {
                 serialError.setText("ERROR: Serial length of XXXXXXXXXX");
                 return false;
-            } else if (!isDigitAlpha(serial)) {
+            } else if (!c.isDigitAlpha(serial)) {
                 serialError.setText("ERROR: Serial cannot contain special characters");
                 return false;
             }
@@ -154,12 +176,13 @@ public class InventoryController implements Initializable {
     }
     @FXML
     public void addButton(ActionEvent actionEvent) {
+        checkValue();
         checkSerial();
         checkName();
         //System.out.println(checkSerial());
         //System.out.println(checkName());
         if (checkName() && checkSerial()) {
-            Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            Table ex5 = new Table("$" + textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
             dataList.add(ex5);
         }
     }
@@ -170,14 +193,14 @@ public class InventoryController implements Initializable {
         // grab a table for it
         // check if it exists in a data list. then delete from data list
         ObservableList<Table> deletedDataList = tableView.getSelectionModel().getSelectedItems();
+        System.out.println(deletedDataList);
         dataList.removeAll(deletedDataList);
     }
 
     public void openButtonAction(ActionEvent event) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open this shit");
-        fileChooser.setInitialFileName("wtfYO");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Tab-Separated-Values", "*.tsv"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File", "*.txt"));
         Stage stage = (Stage) root.getScene().getWindow();
         File file = fileChooser.showOpenDialog(stage);
 
@@ -189,17 +212,42 @@ public class InventoryController implements Initializable {
 
     @FXML
     public void saveButtonAction(ActionEvent event) {
+
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save this shit");
-        fileChooser.setInitialFileName("wtfYO");
+        fileChooser.setInitialFileName("New Table");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Tab-Separated-Values", "*.tsv"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File", "*.txt"));
         Stage stage = (Stage) root.getScene().getWindow();
         try {
+
             File file = fileChooser.showSaveDialog(stage);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath()));
+            writer.write("Value ($)\t");
+            writer.write("Serial Number\t");
+            writer.write("Name\n");
             fileChooser.setInitialDirectory(file.getParentFile());
+            List <List<String>> arrList = new ArrayList<>();
+            for (int i = 0; i < tableView.getItems().size(); i++) {
+                Table table = tableView.getItems().get(i);
+                arrList.add(new ArrayList<>());
+                arrList.get(i).add(table.value.get() + "\t");
+                arrList.get(i).add("\t" + table.serial.get());
+                arrList.get(i).add("\t" + table.name.get() + "\n");
+            }
+
+            for (int i = 0; i < arrList.size(); i++) {
+                for (int j = 0; j < arrList.get(i).size(); j++) {
+                    System.out.print(arrList.get(i).get(j));
+                    writer.write(arrList.get(i).get(j));
+                }
+            }
+                writer.close();
         }
         catch (Exception ex) {
             ex.printStackTrace();
+            return;
         }
     }
 }

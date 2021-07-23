@@ -3,9 +3,9 @@ package ucf.assignments;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Table {
-    private final SimpleStringProperty value;
-    private final SimpleStringProperty serial;
-    private final SimpleStringProperty name;
+    protected SimpleStringProperty value;
+    protected SimpleStringProperty serial;
+    protected SimpleStringProperty name;
 
     public Table(String value, String serial, String name) {
         this.value = new SimpleStringProperty(value);
