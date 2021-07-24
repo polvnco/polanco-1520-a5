@@ -22,16 +22,17 @@
       <TextField fx:id="textFieldsNumber" layoutX="176.0" layoutY="510.0" onAction="#addButton" prefHeight="25.0" prefWidth="311.0" promptText="Enter Serial Number:" />
       <TextField fx:id="textFieldName" layoutX="503.0" layoutY="510.0" onAction="#addButton" prefHeight="25.0" prefWidth="207.0" promptText="Enter Name:" />
       <Button layoutX="743.0" layoutY="510.0" mnemonicParsing="false" onAction="#addButton" text="Add to List" />
-      <Button layoutX="357.0" layoutY="679.0" mnemonicParsing="false" onAction="#deleteButtonAction" text="Delete Selected Row" />
-      <Text layoutX="14.0" layoutY="579.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Console:" />
-      <Button fx:id="openBtn" layoutX="436.0" layoutY="2.0" mnemonicParsing="false" onAction="#openButtonAction" text="Open File" />
+      <Button layoutX="689.0" layoutY="679.0" mnemonicParsing="false" onAction="#deleteButtonAction" text="Delete Selected Row" />
+      <Button fx:id="openBtn" layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#openButtonAction" text="Open File" />
       <Text layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Keyword Search -&gt;" />
-      <Button fx:id="saveBtn" layoutX="521.0" layoutY="2.0" mnemonicParsing="false" onAction="#saveButtonAction" text="Save File" />
+      <Button fx:id="saveBtn" layoutX="89.0" layoutY="679.0" mnemonicParsing="false" onAction="#saveTSVButtonAction" text="Save as TSV" />
       <Label fx:id="nameError" layoutX="503.0" layoutY="545.0" prefHeight="17.0" prefWidth="311.0" style="-fx-background-color: white;">
          <font>
             <Font size="10.0" />
          </font></Label>
       <Label fx:id="serialError" layoutX="176.0" layoutY="545.0" prefHeight="17.0" prefWidth="311.0" style="-fx-background-color: white;" />
       <Label fx:id="valueError" layoutX="14.0" layoutY="545.0" prefHeight="17.0" prefWidth="149.0" style="-fx-background-color: white;" />
+      <Button fx:id="saveHTMLBtn" layoutX="176.0" layoutY="679.0" mnemonicParsing="false" onAction="#saveHTMLButtonAction" text="Save as HTML" />
+      <Button fx:id="saveJSONBtn" layoutX="275.0" layoutY="679.0" mnemonicParsing="false" onAction="#saveJSONButtonAction" text="Save as JSON" />
    </children>
 </Pane>

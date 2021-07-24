@@ -1,5 +1,6 @@
 package ucf.assignments;
 
+import com.google.gson.Gson;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -8,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -152,7 +154,6 @@ public class InventoryController implements Initializable {
             }
 
             if (serialData.contains(serial)) {
-                System.out.println("");
                 serialError.setText("ERROR: Serial Duplication!");
                 return false;
             } else if (serial.isEmpty()) {
@@ -179,9 +180,8 @@ public class InventoryController implements Initializable {
         checkValue();
         checkSerial();
         checkName();
-        //System.out.println(checkSerial());
-        //System.out.println(checkName());
-        if (checkName() && checkSerial()) {
+        System.out.println(checkValue());
+        if (checkName() && checkSerial() && checkValue()) {
             Table ex5 = new Table("$" + textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
             dataList.add(ex5);
         }
@@ -200,7 +200,7 @@ public class InventoryController implements Initializable {
     public void openButtonAction(ActionEvent event) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open this shit");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File", "*.txt"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Table-Separated-Values", "*.txt"));
         Stage stage = (Stage) root.getScene().getWindow();
         File file = fileChooser.showOpenDialog(stage);
 
@@ -211,13 +211,11 @@ public class InventoryController implements Initializable {
     }
 
     @FXML
-    public void saveButtonAction(ActionEvent event) {
-
+    public void saveTSVButtonAction(ActionEvent event) {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save this shit");
-        fileChooser.setInitialFileName("New Table");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Tab-Separated-Values", "*.tsv"));
+        fileChooser.setInitialFileName("New Table" + ".tsv");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File", "*.txt"));
         Stage stage = (Stage) root.getScene().getWindow();
         try {
@@ -237,17 +235,119 @@ public class InventoryController implements Initializable {
                 arrList.get(i).add("\t" + table.name.get() + "\n");
             }
 
-            for (int i = 0; i < arrList.size(); i++) {
-                for (int j = 0; j < arrList.get(i).size(); j++) {
-                    System.out.print(arrList.get(i).get(j));
-                    writer.write(arrList.get(i).get(j));
+            for (List<String> strings : arrList) {
+                for (String string : strings) {
+                    System.out.print(string);
+                    writer.write(string);
                 }
             }
                 writer.close();
         }
         catch (Exception ex) {
             ex.printStackTrace();
-            return;
+        }
+    }
+
+    @FXML
+    public void saveHTMLButtonAction(ActionEvent event) {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save this shit");
+        fileChooser.setInitialFileName("New Table");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("HyperText Markup Language", "*.html"));
+        Stage stage = (Stage) root.getScene().getWindow();
+        try {
+
+            File file = fileChooser.showSaveDialog(stage);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath()));
+            writer.write("""
+                    <table>
+                      <tr>
+                        <th>Value ($)</th>
+                        <th>Serial Number</th>
+                        <th>Name</th>
+                      </tr>
+                      <tr>
+                    """);
+            fileChooser.setInitialDirectory(file.getParentFile());
+            List <List<String>> valueList = new ArrayList<>();
+            for (int i = 0; i < tableView.getItems().size(); i++) {
+                Table table = tableView.getItems().get(i);
+                valueList.add(new ArrayList<>());
+                valueList.get(i).add("<td>" + table.value.get() + "</td>\n");
+            }
+
+            List <List<String>> sNumberList = new ArrayList<>();
+            for (int i = 0; i < tableView.getItems().size(); i++) {
+                Table table = tableView.getItems().get(i);
+                sNumberList.add(new ArrayList<>());
+                sNumberList.get(i).add("<td>" + table.serial.get() + "</td>\n");
+            }
+
+            List <List<String>> nameList = new ArrayList<>();
+            for (int i = 0; i < tableView.getItems().size(); i++) {
+                Table table = tableView.getItems().get(i);
+                nameList.add(new ArrayList<>());
+                nameList.get(i).add("<td>" + table.name.get() + "</td>\n");
+            }
+
+            for (int j = 0; j < valueList.size(); j++) {
+                List<String> value = valueList.get(j);
+                List<String> serial = sNumberList.get(j);
+                List<String> name = nameList.get(j);
+                //System.out.print(valueList);
+                for (int i = 0; i < value.size(); i++) {
+                    String valueString = value.get(i);
+                    String serialString = serial.get(i);
+                    String nameString = name.get(i);
+                    System.out.print(valueString + " " + serialString + " " + nameString + "</tr>\n");
+                    writer.write("<tr>\n");
+                    writer.write(valueString + " " + serialString + " " + nameString + "</tr>\n");
+                }
+            }
+            writer.write("</table>");
+            writer.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void saveJSONButtonAction(ActionEvent event) {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save this shit");
+        fileChooser.setInitialFileName("New Table" + ".tsv");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JavaScript Object Notation", "*.json"));
+        Stage stage = (Stage) root.getScene().getWindow();
+        try {
+
+            File file = fileChooser.showSaveDialog(stage);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath()));
+            writer.write("Value ($)\t");
+            writer.write("Serial Number\t");
+            writer.write("Name\n");
+            fileChooser.setInitialDirectory(file.getParentFile());
+            List <List<String>> arrList = new ArrayList<>();
+            for (int i = 0; i < tableView.getItems().size(); i++) {
+                Table table = tableView.getItems().get(i);
+                arrList.add(new ArrayList<>());
+                arrList.get(i).add(table.value.get() + "\t");
+                arrList.get(i).add("\t" + table.serial.get());
+                arrList.get(i).add("\t" + table.name.get() + "\n");
+            }
+
+            for (List<String> strings : arrList) {
+                for (String string : strings) {
+                    System.out.print(string);
+                    writer.write(string);
+                }
+            }
+            writer.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
