@@ -24,7 +24,7 @@ Example of Adding Inventory Item:
 To remove an item, first select a row that you wish to delete. Then click on the "Delete Selected Row" button.
 
 Example of Deleting Inventory Item:
-![Delete Item](https://s6.gifyu.com/images/addItem.gif)
+![Delete Item](https://s6.gifyu.com/images/deleteItem.gif)
 
 
 ## Edit an Inventory Item
