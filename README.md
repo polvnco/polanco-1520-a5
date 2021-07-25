@@ -71,7 +71,7 @@ The user must input characters between 2 and 256 inclusive.
 
 The add button will prevent the user from adding inventory item if there is an error.
 
-![Name Error](https://s6.gifyu.com/images/nameError.md.gif)
+![Name Error](https://s6.gifyu.com/images/nameError1efc136c66c678c8.gif)
 
 ## Tests (TestFX)
 Test cases were done with TestFX. The following dependencies are required to run these test cases.
