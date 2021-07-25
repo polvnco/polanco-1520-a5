@@ -1,0 +1,85 @@
+@startuml
+!define DARKRED
+!includeurl https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+
+class InventoryController {
+    ~ c : checkered
+    + dataList : ObservableList<Table>
+    ~ serial : String
+    ~ value : Float
+    ~ name : String
+    + saveJSONBtn : Button
+    + saveHTMLBtn : Button
+    + saveBtn : Button
+    + openBtn : Button
+    + addRow : Button
+    + root : Pane
+    + nameColumn : TableColumn<Object, String>
+    + sNumberColumn : TableColumn<Object,String>
+    + valueColumn : TableColumn<Object, String>
+    + tableView : TableView<Table>
+    + filterBar : TextField
+    + textFieldName : TextField
+    + textFieldsNumber : TextField
+    + textFieldValue : TextField
+    + valueError : Label
+    + serialError : Label
+    + nameError : Label
+    --
+    + initialize (location : URL, resources : ResourceBundle) : void
+    + lengthOfDataList () : int
+    + checkValue () : boolean
+    + getValue () : String
+    + checkName () : boolean
+    + checkSerial () : boolean
+    + addButton (actionEvent : ActionEvent) : void
+    + deleteButtonAction (event : ActionEvent) : void
+    + openButtonAction (event : ActionEvent) : void
+    + saveTSVButtonAction (event : ActionEvent) : void
+    + saveHTMLButtonAction (event : ActionEvent) : void
+    + saveJSONButtonAction (event : ActionEvent) : void
+}
+
+class checker {
+    + isDigit (value : String) : boolean
+    + isDigitAlpha (serial : String) : boolean
+}
+
+class inventoryGUI {
+    + start (primaryStage : Stage) : void
+    + main (args : String[]) : void
+}
+
+class InventoryControllerTest {
+    ~ inventory : InventoryController
+    --
+    + start (stage : Stage) : void
+    ~ testValueInput (bot : FxRobot) : void
+    ~ testSerialNumberInput (bot : FxRobot) : void
+    ~ testSerialNumberInput_isAlphanumeric (bot : FxRobot) : void
+    ~ testSerialNumberInput_isEmpty (bot : FxRobot) : void
+    ~ testSerialNumberDuplicationInput (bot : FxRobot) : void
+    ~ testNameInput (bot : FxRobot) : void
+    ~ testLess_Than_Two_Characters (bot : FxRobot) : void
+    ~ testMore_Than_256_Characters (bot : FxRobot) : void
+    ~ add100Items (bot : FxRobot) : void
+}
+
+class Table {
+    # name : SimpleStringProperty
+    # serial : SimpleStringProperty
+    # value : SimpleStringProperty
+    --
+    + Table (value : String, serial : String, name : String)
+    + getValue () : String
+    + valueProperty () : SimpleStringProperty
+    + getSerial () : String
+    + serialProperty () : SimpleStringProperty
+    + getName () : String
+    + nameProperty () : SimpleStringProperty
+}
+
+InventoryControllerTest <- InventoryController
+javafx.Application <|- inventoryGUI
+checker -> InventoryController
+@enduml
