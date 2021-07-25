@@ -88,7 +88,7 @@ Great feature of TestFX is the use of the FxRobot. It allowed me to tell a robot
 
 Here's an example:
 
-![TestFX](https://s6.gifyu.com/images/testFX.gif)
+![TestFX](https://s6.gifyu.com/images/testFX2.gif)
 
 ---
 Made with ♥ by Christopher Polanco
