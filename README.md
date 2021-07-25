@@ -49,7 +49,7 @@ This application allows you to save the table in two different formats. HTML and
 The open button will allow you to open said saved files with an application that can read and open those files. NotePad++ (TSV) and Google Chrome (HTML)
 
 Example of Saving and Opening Inventory Items:
-![Save and Open Item](https://s6.gifyu.com/images/saveAndOpen.gif)
+![Save and Open Item](https://s6.gifyu.com/images/saveAndOpen2.gif)
 
 ## Error Handling
 The application is coded with error handling of input values in the TextFields. 
