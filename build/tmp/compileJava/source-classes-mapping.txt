@@ -1,8 +1,8 @@
 ucf/assignments/Table.java
  ucf.assignments.Table
-ucf/assignments/InventoryController.java
- ucf.assignments.InventoryController
-ucf/assignments/inventoryGUI.java
- ucf.assignments.inventoryGUI
 ucf/assignments/checker.java
  ucf.assignments.checker
+ucf/assignments/inventoryGUI.java
+ ucf.assignments.inventoryGUI
+ucf/assignments/InventoryController.java
+ ucf.assignments.InventoryController

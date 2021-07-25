@@ -1,6 +1,5 @@
 package ucf.assignments;
 
-import com.google.gson.Gson;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -31,13 +30,20 @@ import java.util.ResourceBundle;
 
 public class InventoryController implements Initializable {
 
-    @FXML public Label nameError;
-    @FXML public Label serialError;
-    @FXML public Label valueError;
-    @FXML public TextField textFieldValue;
-    @FXML public TextField textFieldsNumber;
-    @FXML public TextField textFieldName;
-    @FXML public TextField filterBar;
+    @FXML
+    public Label nameError;
+    @FXML
+    public Label serialError;
+    @FXML
+    public Label valueError;
+    @FXML
+    public TextField textFieldValue;
+    @FXML
+    public TextField textFieldsNumber;
+    @FXML
+    public TextField textFieldName;
+    @FXML
+    public TextField filterBar;
     @FXML
     public TableView<Table> tableView;
     @FXML
@@ -48,12 +54,16 @@ public class InventoryController implements Initializable {
     public TableColumn<Object, String> nameColumn;
     @FXML
     public Pane root;
+    public Button addRow;
+    public Button openBtn;
+    public Button saveBtn;
+    public Button saveHTMLBtn;
+    public Button saveJSONBtn;
 
     String name;
     Float value;
     String serial;
 
-    //public ObservableList<Table> data = FXCollections.observableArrayList();
 
     public ObservableList<Table> dataList = FXCollections.observableArrayList();
     checker c = new checker();
@@ -61,7 +71,7 @@ public class InventoryController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tableView.setEditable(true);
-        tableView.setPlaceholder(new Label("You shouldn't be seeing this..."));
+        tableView.setPlaceholder(new Label("You shouldn't be seeing this... Add some data?"));
 
         valueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         sNumberColumn.setCellValueFactory(new PropertyValueFactory<>("Serial"));
@@ -105,14 +115,11 @@ public class InventoryController implements Initializable {
             Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
             value = Float.valueOf(ex5.getValue());
             String otherValue = ex5.getValue();
-            //String formattedValue = String.format("%.02f", value);
-            //System.out.println(formattedValue);
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            String newValue = formatter.format(value);
-            System.out.println(newValue);
             if (!c.isDigit(otherValue)) {
-                valueError.setText("ERROR: Input a number");
                 return false;
+            }
+            else {
+                valueError.setText("Value Status: OKAY!");
             }
         } catch (NumberFormatException e) {
             valueError.setText("ERROR: Input a number");
@@ -123,14 +130,27 @@ public class InventoryController implements Initializable {
         return true;
     }
 
+    public String getValue() {
+        try {
+            Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            value = Float.valueOf(ex5.getValue());
+            String fixedValue;
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            fixedValue = formatter.format(value);
+            return fixedValue;
+
+        } catch (NumberFormatException e) {
+            return "";
+        }
+    }
+
     public boolean checkName() {
         try {
             Table ex5 = new Table(textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
             name = ex5.getName();
             if (name.length() >= 2 && name.length() <= 256) {
                 nameError.setText("Name Status: OKAY!");
-            }
-            else {
+            } else {
                 nameError.setText("ERROR: Name must be between 2 and 256 inclusive characters");
                 return false;
             }
@@ -165,8 +185,7 @@ public class InventoryController implements Initializable {
             } else if (!c.isDigitAlpha(serial)) {
                 serialError.setText("ERROR: Serial cannot contain special characters");
                 return false;
-            }
-            else {
+            } else {
                 serialError.setText("Serial Status: OKAY!");
             }
         } catch (Exception e) {
@@ -175,18 +194,21 @@ public class InventoryController implements Initializable {
 
         return true;
     }
+
     @FXML
     public void addButton(ActionEvent actionEvent) {
         checkValue();
         checkSerial();
         checkName();
-        System.out.println(checkValue());
         if (checkName() && checkSerial() && checkValue()) {
-            Table ex5 = new Table("$" + textFieldValue.getText(), textFieldsNumber.getText(), textFieldName.getText());
+            Table ex5 = new Table(getValue(), textFieldsNumber.getText(), textFieldName.getText());
             dataList.add(ex5);
         }
     }
 
+    public int lengthOfDataList() {
+        return dataList.size();
+        }
     @FXML
     public void deleteButtonAction(ActionEvent event) {
         // grab selected item
@@ -226,7 +248,7 @@ public class InventoryController implements Initializable {
             writer.write("Serial Number\t");
             writer.write("Name\n");
             fileChooser.setInitialDirectory(file.getParentFile());
-            List <List<String>> arrList = new ArrayList<>();
+            List<List<String>> arrList = new ArrayList<>();
             for (int i = 0; i < tableView.getItems().size(); i++) {
                 Table table = tableView.getItems().get(i);
                 arrList.add(new ArrayList<>());
@@ -241,10 +263,8 @@ public class InventoryController implements Initializable {
                     writer.write(string);
                 }
             }
-                writer.close();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
+            writer.close();
+        } catch (Exception ignored) {
         }
     }
 
@@ -270,21 +290,21 @@ public class InventoryController implements Initializable {
                       <tr>
                     """);
             fileChooser.setInitialDirectory(file.getParentFile());
-            List <List<String>> valueList = new ArrayList<>();
+            List<List<String>> valueList = new ArrayList<>();
             for (int i = 0; i < tableView.getItems().size(); i++) {
                 Table table = tableView.getItems().get(i);
                 valueList.add(new ArrayList<>());
                 valueList.get(i).add("<td>" + table.value.get() + "</td>\n");
             }
 
-            List <List<String>> sNumberList = new ArrayList<>();
+            List<List<String>> sNumberList = new ArrayList<>();
             for (int i = 0; i < tableView.getItems().size(); i++) {
                 Table table = tableView.getItems().get(i);
                 sNumberList.add(new ArrayList<>());
                 sNumberList.get(i).add("<td>" + table.serial.get() + "</td>\n");
             }
 
-            List <List<String>> nameList = new ArrayList<>();
+            List<List<String>> nameList = new ArrayList<>();
             for (int i = 0; i < tableView.getItems().size(); i++) {
                 Table table = tableView.getItems().get(i);
                 nameList.add(new ArrayList<>());
@@ -307,9 +327,7 @@ public class InventoryController implements Initializable {
             }
             writer.write("</table>");
             writer.close();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 
@@ -329,7 +347,7 @@ public class InventoryController implements Initializable {
             writer.write("Serial Number\t");
             writer.write("Name\n");
             fileChooser.setInitialDirectory(file.getParentFile());
-            List <List<String>> arrList = new ArrayList<>();
+            List<List<String>> arrList = new ArrayList<>();
             for (int i = 0; i < tableView.getItems().size(); i++) {
                 Table table = tableView.getItems().get(i);
                 arrList.add(new ArrayList<>());
@@ -345,9 +363,7 @@ public class InventoryController implements Initializable {
                 }
             }
             writer.close();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 }

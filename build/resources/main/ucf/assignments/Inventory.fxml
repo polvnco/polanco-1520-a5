@@ -21,7 +21,7 @@
       <TextField fx:id="textFieldValue" layoutX="14.0" layoutY="510.0" onAction="#addButton" prefHeight="25.0" prefWidth="149.0" promptText="Enter Value:" />
       <TextField fx:id="textFieldsNumber" layoutX="176.0" layoutY="510.0" onAction="#addButton" prefHeight="25.0" prefWidth="311.0" promptText="Enter Serial Number:" />
       <TextField fx:id="textFieldName" layoutX="503.0" layoutY="510.0" onAction="#addButton" prefHeight="25.0" prefWidth="207.0" promptText="Enter Name:" />
-      <Button layoutX="743.0" layoutY="510.0" mnemonicParsing="false" onAction="#addButton" text="Add to List" />
+      <Button fx:id="addRow" layoutX="743.0" layoutY="510.0" mnemonicParsing="false" onAction="#addButton" text="Add to List" />
       <Button layoutX="689.0" layoutY="679.0" mnemonicParsing="false" onAction="#deleteButtonAction" text="Delete Selected Row" />
       <Button fx:id="openBtn" layoutX="14.0" layoutY="679.0" mnemonicParsing="false" onAction="#openButtonAction" text="Open File" />
       <Text layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Keyword Search -&gt;" />
