@@ -148,7 +148,7 @@ class InventoryControllerTest {
         assertEquals("ERROR: Name must be between 2 and 256 inclusive characters", nameTestLabel.getText());
     }
 
-/*    @Test
+    @Test
     void testMore_Than_256_Characters(FxRobot bot) {
         // given
         Label nameTestLabel = bot.lookup("#nameError").queryAs(Label.class);
@@ -194,7 +194,7 @@ class InventoryControllerTest {
 
         // then
         assertEquals(100, x);
-    }*/
+    }
 
 /*    @Test
     void deletionTest(FxRobot bot) {
